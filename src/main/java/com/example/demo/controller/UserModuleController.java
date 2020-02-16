@@ -66,8 +66,24 @@ public class UserModuleController {
 
     @PutMapping("/{moduleId}")
     public UserModule putOneModule(@PathVariable String moduleId , @RequestBody UserModule moduleToPut){
-        return  null;
+        JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        moduleToPut.setId(moduleId);
+        moduleToPut.setUserId(user.getId());
+
+        return userModuleService.putModule(moduleToPut);
     }
 
+    @DeleteMapping("/{moduleId}")
+    public UserModule deleteOndeModule(@PathVariable String moduleId){
+        JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userModuleService.deleteModule(moduleId , user.getId());
+    }
+
+//    @PatchMapping("/{moduleId}/properties")
+//    public UserModule patchUserModuleProps(){}
+//
+//    @PatchMapping("/{moduleId}/parentIds")
+//    public UserModule patchUserModuleParentIds(){}
 
 }
