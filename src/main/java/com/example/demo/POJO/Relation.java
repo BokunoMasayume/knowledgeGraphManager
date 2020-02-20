@@ -1,58 +1,36 @@
 package com.example.demo.POJO;
 
-import org.neo4j.ogm.annotation.Properties;
-import org.springframework.data.neo4j.annotation.QueryResult;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.neo4j.ogm.annotation.*;
 
 import java.util.Map;
-@QueryResult
+//cannot use @Data cause stackoverflowerror when saving relationship
+@Getter
+@Setter
+@RelationshipEntity(type = "NORMAL")
 public class Relation {
-    private long startId ;
-    private long endId;
+    @Id @GeneratedValue private Long id;
 
+    @JsonIgnore
+    @StartNode
+    private Node startNode;
 
-    private long id;
+    @JsonIgnore
+    @EndNode
+    private Node endNode;
 
-    @Properties
-    private Map<String, Object>properties;
+    @Property
     private String relationName;
 
-    public String getRelationName() {
-        return relationName;
-    }
 
-    public void setRelationName(String relationName) {
-        this.relationName = relationName;
-    }
 
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
+    @Properties
+    private Map<String , Object> properties;
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getStartId() {
-        return startId;
-    }
-
-    public void setStartId(long startId) {
-        this.startId = startId;
-    }
-
-    public long getEndId() {
-        return endId;
-    }
-
-    public void setEndId(long endId) {
-        this.endId = endId;
-    }
+    @Property
+    private boolean delete;
 }

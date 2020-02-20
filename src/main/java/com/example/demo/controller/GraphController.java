@@ -1,18 +1,17 @@
 package com.example.demo.controller;
 
-import com.example.demo.POJO.Person;
-import com.example.demo.POJO.Rela;
-import com.example.demo.POJO.Relation;
-import com.example.demo.POJO.RelationWarp;
+import com.example.demo.POJO.*;
+import com.example.demo.repository.NodeRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RelaRepository;
+import com.example.demo.repository.RelationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/graph")
@@ -24,11 +23,27 @@ public class GraphController {
     @Autowired
     RelaRepository relaRepository;
 
-    @GetMapping("/nodes/{name}")
-    @Transactional
-    public Iterable<Person> greeting(@PathVariable("name")String name){
+    @Autowired
+    NodeRepository nodeRepository;
 
-       return personRepository.findAll();
+    @Autowired
+    RelationRepository relationRepository;
+
+    @PostMapping("/test")
+    public Relation greeting(@RequestBody RelationWarp relationWarp){
+        Relation rel = relationRepository.createEmptyRelationByIds(relationWarp.getStartId() , relationWarp.getEndId());
+        System.out.println("after insert empty relationship");
+        rel.setProperties(relationWarp.getRelaUnit().getProperties());
+        rel.setRelationName(relationWarp.getRelaUnit().getRelationName());
+        System.out.println("before save relationship");
+
+        Relation a = relationRepository.save(rel);
+        System.out.println("after save relationship");
+
+        return a;
+
+//       return nodeRepository.findByLabelsAnd(new ArrayList<>(Arrays.asList("ALIEN","HUMAN")));
+//        return nodeRepository.findall();
     }
 
     @Transactional
