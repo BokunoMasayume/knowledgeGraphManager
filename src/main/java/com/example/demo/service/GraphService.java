@@ -19,7 +19,7 @@ public interface GraphService {
 
     Node patchNode(String userLabel , String fileLabel , Map<String , Object> mapToPatch);
 
-    Node PutNode(String userLabel, String fileLabel , Node nodeToPut);
+    Node putNode(String userLabel, String fileLabel , Node nodeToPut);
 
     Node insertNode(String userLabel , String fileLabel , Node nodeToInsert);
 

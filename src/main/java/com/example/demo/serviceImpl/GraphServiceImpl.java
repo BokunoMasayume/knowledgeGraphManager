@@ -63,7 +63,7 @@ public class GraphServiceImpl implements GraphService {
     }
 
     @Override
-    public Node PutNode(String userLabel, String fileLabel, Node nodeToPut) {
+    public Node putNode(String userLabel, String fileLabel, Node nodeToPut) {
         Node node = nodeRepository.findByNodeIdAndUserLabelAndFileLabel(nodeToPut.getId() , userLabel , fileLabel);
 
         node.setMainLabel(nodeToPut.getMainLabel());
