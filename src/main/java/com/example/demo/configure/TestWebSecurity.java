@@ -55,7 +55,8 @@ public class TestWebSecurity extends WebSecurityConfigurerAdapter {
                 "/**/*.html",
                 "/**/*.css",
                 "/**/*.js",
-                "/**/*.png"
+                "/**/*.png",
+                "/**/*.jpg"
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated();

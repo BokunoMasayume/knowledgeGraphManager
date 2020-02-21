@@ -7,14 +7,21 @@ import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.RelaRepository;
 import com.example.demo.repository.RelationRepository;
 import com.example.demo.service.GraphService;
+import com.example.demo.util.ImageUtil;
 import com.example.demo.util.JwtTokenUtil;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,33 +44,49 @@ public class GraphController {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping("/test")
-    public Relation greeting(@RequestBody RelationWarp relationWarp){
-        Relation rel = relationRepository.createEmptyRelationByIds(relationWarp.getStartId() , relationWarp.getEndId());
-        System.out.println("after insert empty relationship");
-        rel.setProperties(relationWarp.getRelaUnit().getProperties());
-        rel.setRelationName(relationWarp.getRelaUnit().getRelationName());
-        System.out.println("before save relationship");
 
-        Relation a = relationRepository.save(rel);
-        System.out.println("after save relationship");
 
-        return a;
 
-//       return nodeRepository.findByLabelsAnd(new ArrayList<>(Arrays.asList("ALIEN","HUMAN")));
-//        return nodeRepository.findall();
-    }
 
-    @GetMapping("/test")
-    public String operateImage() throws IOException {
-        Thumbnails.of("src\\main\\resources\\static\\image\\original.png")
-//                .size(500,500)
-                .sourceRegion(Positions.CENTER , 500,500)
-//                .scale(1f)
-                .size(50,50)
-                .toFile("target.png");
-        return "done";
-    }
+
+//    @Autowired
+//    ImageUtil imageUtil;
+//
+//    @PostMapping("/test")
+//    public Relation greeting(@RequestBody RelationWarp relationWarp){
+//        Relation rel = relationRepository.createEmptyRelationByIds(relationWarp.getStartId() , relationWarp.getEndId());
+//        System.out.println("after insert empty relationship");
+//        rel.setProperties(relationWarp.getRelaUnit().getProperties());
+//        rel.setRelationName(relationWarp.getRelaUnit().getRelationName());
+//        System.out.println("before save relationship");
+//
+//        Relation a = relationRepository.save(rel);
+//        System.out.println("after save relationship");
+//
+//        return a;
+//
+////       return nodeRepository.findByLabelsAnd(new ArrayList<>(Arrays.asList("ALIEN","HUMAN")));
+////        return nodeRepository.findall();
+//    }
+//
+//    @PostMapping("/imagetest")
+//    public String uploadimagetest(@RequestParam("image")MultipartFile  image, @RequestParam("userId")String id) throws IOException {
+//        String imageId = new ObjectId().toString();
+//        BufferedImage bufimage =ImageIO.read(image.getInputStream());
+//
+//        return imageUtil.saveImage(bufimage);
+//    }
+
+//    @GetMapping("/test")
+//    public String operateImage() throws IOException {
+//        Thumbnails.of(originPath+"original.png")
+////                .size(500,500)
+//                .sourceRegion(Positions.CENTER , 500,500)
+////                .scale(1f)
+//                .size(50,50)
+//                .toFile(new ObjectId().toString()+".jpg");
+//        return "done";
+//    }
 
 
     /* node things */

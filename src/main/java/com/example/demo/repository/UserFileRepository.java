@@ -16,4 +16,6 @@ public interface UserFileRepository extends MongoRepository<UserFile , String> {
 
         UserFile findByIdAndUserId(String id, String userId);
 
+        Boolean existsByIdAndUserId(String id, String userId);
+
 }

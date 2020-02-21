@@ -13,4 +13,6 @@ public interface UserModuleRepository extends MongoRepository<UserModule ,String
     List<UserModule> findByUserId(String userId);
 
     UserModule findByIdAndUserId(String id , String userId);
+
+    Boolean existsByIdAndUserId(String id , String userId);
 }
