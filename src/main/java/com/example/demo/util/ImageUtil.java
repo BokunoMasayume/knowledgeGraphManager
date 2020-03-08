@@ -6,7 +6,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 @Component
@@ -16,6 +18,10 @@ public class ImageUtil {
 
     @Value("${image.imageToUse.path}")
     private String imageToUsePath;
+
+    public String getImagePath(){
+        return this.imageToUsePath;
+    }
 
     @Value("${image.imageToUse.width}")
     private double imageToUseWidth;
@@ -50,6 +56,8 @@ public class ImageUtil {
 
         return imageId+".jpg";
     }
+
+
 
 
 }

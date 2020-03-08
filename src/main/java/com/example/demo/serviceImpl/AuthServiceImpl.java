@@ -5,7 +5,11 @@ import com.example.demo.configure.JwtUser;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import com.example.demo.util.JwtTokenUtil;
+
+import com.example.demo.configure.JwtUserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -24,7 +29,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+
     @Autowired
+    @Qualifier("myUserDetailService")
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -79,4 +86,17 @@ public class AuthServiceImpl implements AuthService {
         }
         return null;
     }
+
+    @Override
+    public User getSelfInfo(String dressToken){
+        final String token = dressToken.substring(tokenHead.length());
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+
+        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+        if(jwtTokenUtil.canTokenBeRefreshed(token , user.getLastPasswordResetDate() , user.getLastusernameResetDate())){
+            return userRepository.findByUsername(user.getUsername());
+        }
+        return null;
+    }
+
 }

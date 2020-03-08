@@ -25,14 +25,14 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public List<Node> getNodesByFile(String userLabel , String fileLabel){
-        return nodeRepository.findByUserLabelAndFileLabel(userLabel, fileLabel);
+        return nodeRepository.findByUserLabelAndFileLabelAndDelete(userLabel, fileLabel,false);
     }
 
     @Override
     public List<Node> deleteNodesByFile(String userLabel , String fileLabel){
         deleteRelationsByFile(userLabel, fileLabel);
 
-        List<Node> nodes = nodeRepository.findByUserLabelAndFileLabel(userLabel, fileLabel);
+        List<Node> nodes = nodeRepository.findByUserLabelAndFileLabelAndDelete(userLabel, fileLabel,false);
 
         for (Node node : nodes){
             node.setDelete(true);
@@ -42,17 +42,20 @@ public class GraphServiceImpl implements GraphService {
     }
 
     @Override
-    public Node patchNode(String userLabel , String fileLabel , Map<String , Object> mapToPatch){
-        Node node = nodeRepository.findByNodeIdAndUserLabelAndFileLabel((Long) mapToPatch.get("id") , userLabel , fileLabel);
+    public Node patchNode(String userLabel , String fileLabel , Node nodeToPatch){
+        Node node = nodeRepository.findByNodeIdAndUserLabelAndFileLabelAndDelete(nodeToPatch.getId() , userLabel , fileLabel  ,false);
 
-        if(mapToPatch.get("labels")!= null){
-            node.setLabels((List<String>) mapToPatch.get("labels"));
+        if(node== null)return null;
+//        System.out.println("have this node");
+
+        if(nodeToPatch.getLabels()!= null){
+            node.setLabels(nodeToPatch.getLabels());
         }
-        if (mapToPatch.get("properties") != null){
-            node.setProperties((Map<String, Object>) mapToPatch.get("properties"));
+        if (nodeToPatch.getProperties() != null){
+            node.setProperties(nodeToPatch.getProperties());
         }
-        if (mapToPatch.get("mainLabel") != null){
-            node.setMainLabel((String) mapToPatch.get("mainLabel"));
+        if (nodeToPatch.getMainLabel()!= null){
+            node.setMainLabel(nodeToPatch.getMainLabel());
         }
 
         if (node.getLabels().contains(userLabel) && node.getLabels().contains(fileLabel)){
@@ -64,7 +67,9 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public Node putNode(String userLabel, String fileLabel, Node nodeToPut) {
-        Node node = nodeRepository.findByNodeIdAndUserLabelAndFileLabel(nodeToPut.getId() , userLabel , fileLabel);
+        Node node = nodeRepository.findByNodeIdAndUserLabelAndFileLabelAndDelete(nodeToPut.getId() , userLabel , fileLabel,false);
+
+        if(node== null)return null;
 
         node.setMainLabel(nodeToPut.getMainLabel());
         node.setProperties(nodeToPut.getProperties());
@@ -92,8 +97,10 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public Node deleteNode(String userLabel, String fileLabel, Long nodeId) {
-        Node node  = nodeRepository.findByNodeIdAndUserLabelAndFileLabel(nodeId , userLabel , fileLabel);
+        Node node  = nodeRepository.findByNodeIdAndUserLabelAndFileLabelAndDelete(nodeId , userLabel , fileLabel,false);
 
+        if(node== null)return null;
+        deleteRelationsByRelatedNodeId(node.getId());
         node.setDelete(true);
 
         return nodeRepository.save(node);
@@ -101,17 +108,25 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public Node getNode(String userLabel, String fileLabel, Long nodeId) {
-        return nodeRepository.findByNodeIdAndUserLabelAndFileLabel(nodeId , userLabel , fileLabel);
+        return nodeRepository.findByNodeIdAndUserLabelAndFileLabelAndDelete(nodeId , userLabel , fileLabel,false);
+    }
+
+    public void deleteRelationsByRelatedNodeId(Long nodeId){
+        List<RelationWarp> relationwarps = relationRepository.findByRelatedNodeId(nodeId);
+        for(RelationWarp warp : relationwarps){
+            warp.getRelaUnit().setDelete(true);
+            relationRepository.save(warp.getRelaUnit());
+        }
     }
 
     @Override
     public List<RelationWarp> getRelationsByFile(String userLabel, String fileLabel) {
-        return relationRepository.findByUserLabelAndFileLabel(userLabel, fileLabel);
+        return relationRepository.findByUserLabelAndFileLabelAndDelete(userLabel, fileLabel,false);
     }
 
     @Override
     public List<RelationWarp> deleteRelationsByFile(String userLabel, String fileLabel) {
-        List<RelationWarp> relations = relationRepository.findByUserLabelAndFileLabel(userLabel, fileLabel);
+        List<RelationWarp> relations = relationRepository.findByUserLabelAndFileLabelAndDelete(userLabel, fileLabel,false);
         for (RelationWarp relation: relations){
             relation.getRelaUnit().setDelete(true);
             relationRepository.save(relation.getRelaUnit());
@@ -120,14 +135,17 @@ public class GraphServiceImpl implements GraphService {
     }
 
     @Override
-    public Relation patchRelation(String userLabel, String fileLabel, Map<String, Object> mapToPatch) {
-        RelationWarp relation = relationRepository.findByIdAndLabelsAnd((Long)mapToPatch.get("id") ,new ArrayList<>( Arrays.asList(fileLabel , userLabel)));
+    public Relation patchRelation(String userLabel, String fileLabel, Relation relationToPatch) {
+        RelationWarp relation = relationRepository.findByIdAndLabelsAndAndDelete(relationToPatch.getId() ,new ArrayList<>( Arrays.asList(fileLabel , userLabel)) , false);
+        System.out.println("before null check");
+        if(relation==null)return null;
+        System.out.println("after null check");
 
-        if (mapToPatch.get("relationName") != null){
-            relation.getRelaUnit().setRelationName( (String)mapToPatch.get("relationName") );
+        if (relationToPatch.getRelationName()!= null){
+            relation.getRelaUnit().setRelationName( relationToPatch.getRelationName() );
         }
-        if(mapToPatch.get("properties") != null ){
-            relation.getRelaUnit().setProperties( (Map<String, Object>) mapToPatch.get("properties"));
+        if(relationToPatch.getProperties() != null ){
+            relation.getRelaUnit().setProperties( relationToPatch.getProperties() );
         }
 
         return relationRepository.save(relation.getRelaUnit());
@@ -135,7 +153,9 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public Relation putRelation(String userLabel, String fileLabel, Relation relationToPut) {
-        RelationWarp relation = relationRepository.findByIdAndLabelsAnd(relationToPut.getId() ,new ArrayList<>( Arrays.asList(fileLabel , userLabel)));
+        RelationWarp relation = relationRepository.findByIdAndLabelsAndAndDelete(relationToPut.getId() ,new ArrayList<>( Arrays.asList(fileLabel , userLabel)),false);
+
+        if(relation==null)return null;
 
         relation.getRelaUnit().setProperties(relationToPut.getProperties());
         relation.getRelaUnit().setRelationName(relationToPut.getRelationName());
@@ -147,6 +167,8 @@ public class GraphServiceImpl implements GraphService {
     public Relation insertRelation(String userLabel, String fileLabel, RelationWarp relationToInsert) {
         Relation relation = relationRepository.createEmptyRelationByIds(relationToInsert.getStartId() , relationToInsert.getEndId());
 
+        if(relation==null)return null;
+
         relation.setRelationName(relationToInsert.getRelaUnit().getRelationName());
         relation.setProperties(relationToInsert.getRelaUnit().getProperties());
         relation.setDelete(false);
@@ -156,7 +178,9 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public Relation deleteRelation(String userLabel, String fileLabel, Long relationId) {
-        RelationWarp relation = relationRepository.findByIdAndLabelsAnd(relationId,new ArrayList<>( Arrays.asList(fileLabel , userLabel)));
+        RelationWarp relation = relationRepository.findByIdAndLabelsAndAndDelete(relationId,new ArrayList<>( Arrays.asList(fileLabel , userLabel)),false);
+
+        if(relation==null)return null;
 
         relation.getRelaUnit().setDelete(true);
 
@@ -165,6 +189,6 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public RelationWarp getRelation(String userLabel, String fileLabel, Long relationId) {
-        return relationRepository.findByIdAndLabelsAnd(relationId,new ArrayList<>( Arrays.asList(fileLabel , userLabel)));
+        return relationRepository.findByIdAndLabelsAndAndDelete(relationId,new ArrayList<>( Arrays.asList(fileLabel , userLabel)),false);
     }
 }

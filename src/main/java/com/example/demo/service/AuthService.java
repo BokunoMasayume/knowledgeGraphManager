@@ -11,5 +11,7 @@ public interface AuthService {
     //refresh validated user token
     String refresh(String oldToken);
 
+    User getSelfInfo(String dressToken);
+
 
 }

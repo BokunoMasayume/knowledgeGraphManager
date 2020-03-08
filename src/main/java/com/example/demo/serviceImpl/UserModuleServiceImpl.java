@@ -51,7 +51,8 @@ public class UserModuleServiceImpl implements UserModuleService {
                 Method meth = null;
                 try {
                     System.out.println("generate method name: set"+name.substring(0,1).toUpperCase()+name.substring(1) );
-                    meth = UserModule.class.getMethod("set"+name.substring(0,1).toUpperCase()+name.substring(1) , mapToPatch.get(name).getClass());
+                    System.out.println("the class of "+name +"is "+mapToPatch.get(name).getClass().getName());
+                    meth = UserModule.class.getMethod("set"+name.substring(0,1).toUpperCase()+name.substring(1) , mapToPatch.get(name).getClass().getName().equals("java.lang.Boolean")?boolean.class:mapToPatch.get(name).getClass());
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }

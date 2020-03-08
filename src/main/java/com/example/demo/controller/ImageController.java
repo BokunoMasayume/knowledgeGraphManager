@@ -11,12 +11,16 @@ import com.example.demo.util.ImageUtil;
 import com.example.demo.util.JwtTokenUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -69,5 +73,14 @@ public class ImageController {
         module.setAvatarUri(imagePath);
         return userModuleRepository.save(module).getAvatarUri();
 
+    }
+
+    @GetMapping(value = "/{imgname}" , produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(@PathVariable String imgname) throws IOException {
+        FileInputStream inputStream = new FileInputStream(new File(imageUtil.getImagePath()+imgname));
+        byte[] bytes = new byte[inputStream.available()];
+        inputStream.read(bytes , 0 , inputStream.available());
+
+        return bytes;
     }
 }

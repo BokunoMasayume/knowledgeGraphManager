@@ -2,10 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.POJO.*;
 import com.example.demo.configure.JwtUser;
-import com.example.demo.repository.NodeRepository;
-import com.example.demo.repository.PersonRepository;
-import com.example.demo.repository.RelaRepository;
-import com.example.demo.repository.RelationRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.GraphService;
 import com.example.demo.util.ImageUtil;
 import com.example.demo.util.JwtTokenUtil;
@@ -43,6 +40,9 @@ public class GraphController {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    UserFileRepository userFileRepository;
 
 
 
@@ -94,31 +94,42 @@ public class GraphController {
     @GetMapping("/node/{fileId}")
     public List<Node> getFileNodes(@PathVariable String fileId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         return graphService.getNodesByFile("U"+user.getId() , "F"+fileId);
     }
 
     @DeleteMapping("/node/{fileId}")
     public List<Node> deleteFile(@PathVariable String fileId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         return graphService.deleteNodesByFile("U"+user.getId() , "F"+fileId);
     }
 
     @GetMapping("/node/{fileId}/{nodeId}")
     public Node getOneNode(@PathVariable String fileId , @PathVariable Long nodeId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         return graphService.getNode("U"+user.getId() , "F"+fileId , nodeId);
     }
 
     @PatchMapping("/node/{fileId}/{nodeId}")
-    public Node patchOneNode(@PathVariable String fileId , @PathVariable Long nodeId , @RequestBody Map<String , Object> mapToPatch){
+    public Node patchOneNode(@PathVariable String fileId , @PathVariable Long nodeId , @RequestBody Node nodeToPatch){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        mapToPatch.put("id" , nodeId);
-        return graphService.patchNode("U"+user.getId() , "F"+fileId ,mapToPatch);
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+//        System.out.println("have this file");
+//        mapToPatch.put("id" , nodeId);
+        nodeToPatch.setId(nodeId);
+        return graphService.patchNode("U"+user.getId() , "F"+fileId ,nodeToPatch);
     }
 
     @PutMapping("/node/{fileId}/{nodeId}")
     public Node putOneNode(@PathVariable String fileId , @PathVariable Long nodeId , @RequestBody Node nodeToPut){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         nodeToPut.setId(nodeId);
         return graphService.putNode("U"+user.getId() , "F"+fileId , nodeToPut);
     }
@@ -126,6 +137,8 @@ public class GraphController {
     @PostMapping("/node/{fileId}")
     public Node insertOneNode(@PathVariable String fileId , @RequestBody Node nodeToInsert){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
 
         return graphService.insertNode("U"+user.getId() , "F"+fileId , nodeToInsert);
     }
@@ -133,6 +146,8 @@ public class GraphController {
     @DeleteMapping("/node/{fileId}/{nodeId}")
     public Node deleteOneNode(@PathVariable String fileId , @PathVariable Long nodeId ){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         return graphService.deleteNode("U"+user.getId() , "F"+fileId ,nodeId);
     }
 
@@ -143,6 +158,8 @@ public class GraphController {
     @GetMapping("/relation/{fileId}")
     public List<RelationWarp> getFileRelations(@PathVariable String fileId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
 
         return graphService.getRelationsByFile("U"+user.getId() , "F"+fileId);
     }
@@ -150,6 +167,8 @@ public class GraphController {
     @DeleteMapping("/relation/{fileId}")
     public List<RelationWarp> deleteFileRelations(@PathVariable String fileId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
 
         return graphService.deleteRelationsByFile("U"+user.getId() , "F"+fileId);
     }
@@ -157,12 +176,16 @@ public class GraphController {
     @GetMapping("/relation/{fileId}/{relationId}")
     public RelationWarp getOneRelation(@PathVariable String fileId , @PathVariable Long relationId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         return graphService.getRelation("U"+user.getId() , "F"+fileId , relationId);
     }
 
     @DeleteMapping("/relation/{fileId}/{relationId}")
     public Relation deleteOneRelation(@PathVariable String fileId , @PathVariable Long relationId){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
 
         return graphService.deleteRelation("U"+user.getId() , "F"+fileId , relationId);
     }
@@ -170,22 +193,29 @@ public class GraphController {
     @PostMapping("/relation/{fileId}")
     public Relation insertOneRelation(@PathVariable String fileId ,@RequestBody RelationWarp relationToInsert){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
 
         return graphService.insertRelation("U"+user.getId() , "F"+fileId , relationToInsert);
     }
 
     @PatchMapping("/relation/{fileId}/{relationId}")
-    public Relation patchOneRelation(@PathVariable String fileId , @PathVariable Long relationId , @RequestBody Map<String , Object>mapToPatch){
+    public Relation patchOneRelation(@PathVariable String fileId , @PathVariable Long relationId , @RequestBody  Relation relationToPatch){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        mapToPatch.put("id" , relationId);
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
 
-        return graphService.patchRelation("U"+user.getId() , "F"+fileId , mapToPatch);
+//        mapToPatch.put("id" , relationId);
+
+        relationToPatch.setId(relationId);
+        return graphService.patchRelation("U"+user.getId() , "F"+fileId , relationToPatch);
     }
 
 
     @PutMapping("/relation/{fileId}/{relationId}")
     public Relation putOneRelation(@PathVariable String fileId , @PathVariable Long relationId , @RequestBody Relation relationToPut){
         JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
         relationToPut.setId(relationId);
 
         return graphService.putRelation("U"+user.getId() , "F"+fileId , relationToPut);

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.POJO.User;
+import com.example.demo.configure.CommonNullException;
 import com.example.demo.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +25,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public User register(@RequestBody User userToAdd ){
-        return authService.register(userToAdd);
+        User user = authService.register(userToAdd);
+        if(user == null)throw new CommonNullException();
+        return user;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String , Object>> issueToken( String username, String password) throws AuthenticationException{
+    public ResponseEntity<Map<String , Object>> issueToken(  String username, String password) throws AuthenticationException{
         System.out.println(String.format("username :%s     password: %s" , username, password));
 
         String token = authService.login(username , password);
@@ -49,6 +52,14 @@ public class AuthController {
             tokenMap.put("token" , refreshToken);
             return ResponseEntity.ok(tokenMap);
         }
+    }
+
+    @GetMapping("/selfinfo")
+    public User getSelfInfo(@RequestHeader("${jwt.header}") String token){
+        User user = authService.getSelfInfo(token);
+
+        if(user == null) throw new CommonNullException();
+        return user;
     }
 
 }

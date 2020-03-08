@@ -17,7 +17,7 @@ public interface GraphService {
     //logically ps:delete files physically can straightly detach delete nodes
     List<Node> deleteNodesByFile(String userLabel , String fileLabel);
 
-    Node patchNode(String userLabel , String fileLabel , Map<String , Object> mapToPatch);
+    Node patchNode(String userLabel , String fileLabel , Node nodeToPatch);
 
     Node putNode(String userLabel, String fileLabel , Node nodeToPut);
 
@@ -35,7 +35,7 @@ public interface GraphService {
     //logically
     List<RelationWarp> deleteRelationsByFile(String userLabel , String fileLabel);
 
-    Relation patchRelation(String userLabel , String fileLabel ,  Map<String , Object> mapToPatch);
+    Relation patchRelation(String userLabel , String fileLabel ,  Relation relationToPatch);
 
     Relation putRelation(String userLabel , String fileLabel , Relation relationToPut);
 
