@@ -36,8 +36,8 @@ public class UserFileServiceImpl implements UserFileService {
         if(!fileToDele.getUserId().equals(userId)) return null;
 
         fileToDele.setDelete(true);
-        fileToDele.setOriginName(fileToDele.getFileName());
-        fileToDele.setFileName(null);
+        fileToDele.setOriginName(fileToDele.getFileName()+new ObjectId().toString());
+        fileToDele.setFileName("dele"+new ObjectId().toString());
         return userFileRepository.save( fileToDele);
 
     }

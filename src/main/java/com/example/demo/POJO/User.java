@@ -27,9 +27,10 @@ public class User {
     private String password;
     private List<String> roles;
 
-    @Indexed(unique = true )
+    //sparse : make null legal
+    @Indexed(unique = true ,sparse = true)
     private String email;
-    @Indexed(unique = true )
+    @Indexed(unique = true ,sparse = true)
     private String phoneNumber;
 
     @JsonIgnore
