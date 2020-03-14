@@ -83,7 +83,6 @@ public class UserFileServiceImpl implements UserFileService {
 
     @Override
     public UserFile putFile(UserFile fileToPut) {
-        //partly update
         Optional<UserFile> fileOpt = userFileRepository.findById(fileToPut.getId());
         if(!fileOpt.isPresent())return null;
 

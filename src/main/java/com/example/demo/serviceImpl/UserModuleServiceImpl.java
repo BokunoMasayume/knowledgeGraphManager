@@ -45,7 +45,7 @@ public class UserModuleServiceImpl implements UserModuleService {
         UserModule module = userModuleRepository.findByIdAndUserId((String)mapToPatch.get("id") , (String)mapToPatch.get("userId"));
         if(module == null)return null;
 
-        List<String> patchableProps = new ArrayList<>(Arrays.asList("labelName" , "describe" , "node" , "abstr", "parentIds" , "avatarUri" , "properties"));
+        List<String> patchableProps = new ArrayList<>(Arrays.asList("labelName" , "describe" , "node" , "abstr", "parentIds" , "avatarUri" , "properties" , "groupId"));
         for (String name: patchableProps){
             if(mapToPatch.get(name)!=null){
                 Method meth = null;
@@ -84,6 +84,8 @@ public class UserModuleServiceImpl implements UserModuleService {
         module.setParentIds(moduleToPut.getParentIds());
         module.setAvatarUri(moduleToPut.getAvatarUri());
         module.setProperties(moduleToPut.getProperties());
+
+        module.setGroupId(moduleToPut.getGroupId());
 
         return userModuleRepository.save(module);
 

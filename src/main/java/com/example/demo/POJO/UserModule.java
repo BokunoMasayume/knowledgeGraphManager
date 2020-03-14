@@ -16,7 +16,7 @@ import java.util.Map;
 @Data
 @CompoundIndexes(
         {
-                @CompoundIndex(name="for_unique_label_name" , unique = true , def = "{'userId':1 , 'labelName':1}")
+                @CompoundIndex(name="for_unique_label_name" , unique = true , def = "{'userId':1 , 'labelName':1 }")
         }
 )
 public class UserModule {
@@ -31,5 +31,8 @@ public class UserModule {
     private ArrayList<String> parentIds;
     private String avatarUri;
     private LinkedHashMap<String , Map<String , Object>> properties;
+
+    //module group id
+    private String groupId;
 
 }
