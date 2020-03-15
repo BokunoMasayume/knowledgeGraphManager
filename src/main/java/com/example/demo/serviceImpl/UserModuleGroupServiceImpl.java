@@ -3,6 +3,7 @@ package com.example.demo.serviceImpl;
 import com.example.demo.POJO.UserModuleGroup;
 import com.example.demo.configure.CommonNullException;
 import com.example.demo.repository.UserModuleGroupRepository;
+import com.example.demo.repository.UserModuleRepository;
 import com.example.demo.service.UserModuleGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class UserModuleGroupServiceImpl implements UserModuleGroupService {
 
     @Autowired
     private UserModuleGroupRepository userModuleGroupRepository;
+
+    @Autowired
+    private UserModuleRepository userModuleRepository;
 
     @Override
     public UserModuleGroup deleteModuleGroup(String groupId, String userId) {
@@ -32,6 +36,10 @@ public class UserModuleGroupServiceImpl implements UserModuleGroupService {
 
         if(!groupToDele.getUserId().equals(userId)){
             //not this user's group
+            throw new CommonNullException();
+        }
+        if(userModuleRepository.existsByGroupIdAndUserId( groupId, userId)){
+            //this group still have modules
             throw new CommonNullException();
         }
 

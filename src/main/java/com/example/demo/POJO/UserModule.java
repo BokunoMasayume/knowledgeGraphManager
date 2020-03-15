@@ -29,10 +29,15 @@ public class UserModule {
     private boolean node;
     private boolean abstr;
     private ArrayList<String> parentIds;
-    private String avatarUri;
     private LinkedHashMap<String , Map<String , Object>> properties;
+    //for node module
+    private String avatarUri;
+
 
     //module group id
     private String groupId;
+
+    //for edge module
+    private LinkedHashMap<String , String> style;
 
 }
