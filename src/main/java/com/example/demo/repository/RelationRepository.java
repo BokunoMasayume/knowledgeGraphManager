@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.POJO.RelaCSVWarp;
 import com.example.demo.POJO.Relation;
 import com.example.demo.POJO.RelationWarp;
 import org.springframework.data.neo4j.annotation.Query;
@@ -56,13 +57,13 @@ public interface RelationRepository extends Neo4jRepository<Relation, Long> {
 
 
 
-    @Query(value = "match (p)-[relaUnit]->(q) where relaUnit.delete=$delete and $userLabel in labels(p) and $fileLabel in labels(p) and $userLabel in labels(q) and $fileLabel in labels(q) return p,relaUnit ,q ,id(p) as startId, id(q) as endId ")
+    @Query(value = "match (p)-[relaUnit]->(q) where relaUnit.delete=$delete and $userLabel in labels(p) and $fileLabel in labels(p) and $userLabel in labels(q) and $fileLabel in labels(q) return p ,relaUnit ,q  ,id(p) as startId, id(q) as endId ")
     List<RelationWarp> findByUserLabelAndFileLabelAndDelete(String userLabel , String fileLabel , boolean delete);
 
 
     @Query(value = "match (p)-[relaUnit]->(q) where relaUnit.delete=$delete and id(relaUnit)=$relationId and all(la in $labelList where la in labels(p)) and  all(la in $labelList where la in labels(q)) return p,relaUnit ,q ,id(p) as startId, id(q) as endId ")
     RelationWarp findByIdAndLabelsAndAndDelete(Long relationId , List<String> labelList , boolean delete);
 
-
-
+    @Query(value = "match (p)-[relaUnit]->(q) where relaUnit.delete=$delete and $userLabel in labels(p) and $fileLabel in labels(p) and $userLabel in labels(q) and $fileLabel in labels(q) return relaUnit ,p.mainLabel as startStr, q.mainLabel as endStr ")
+    List<RelaCSVWarp> findForCSVFormat(String userLabel , String fileLabel , boolean delete);
 }

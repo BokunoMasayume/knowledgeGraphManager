@@ -88,6 +88,58 @@ public class GraphController {
 //        return "done";
 //    }
 
+    @PatchMapping("/node/{fileId}")
+    public List<Long> patchFileNodes(@RequestBody List<Node> nodelis, @PathVariable String fileId){
+        JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
+        List<Long> res = new ArrayList<Long>();
+
+//        List<Node> res = new List<Node>() ;
+        for(int i=0;i<nodelis.size();i++){
+            Node node=nodelis.get(i);
+
+            if(node.getId()<0) {
+                node =  graphService.insertNode("U"+user.getId() , "F"+fileId , node);
+                System.out.println("node resid :"+node.getId());
+
+            }
+            else node = graphService.patchNode("U"+user.getId() , "F"+fileId , node);
+
+            res.add( node.getId());
+        }
+
+        return res;
+
+
+    }
+
+    @PatchMapping("/relation/{fileId}")
+    public List<Long> patchFileRelations(@RequestBody List<RelationWarp> relalis , @PathVariable String fileId){
+        JwtUser user =  (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!userFileRepository.existsByIdAndUserIdAndDelete(fileId , user.getId() , false))return null;
+
+        List<Long> res = new ArrayList<Long>();
+
+        for(int i=0 ; i< relalis.size(); i++){
+            RelationWarp relawarp = relalis.get(i);
+            Long resId = 0l;
+            if(relawarp.getRelaUnit().getId()<0){
+                resId = graphService.insertRelation("U"+user.getId() , "F"+fileId , relawarp).getId();
+                System.out.println("relawarp resid :"+resId);
+            }
+            else resId = graphService.patchRelation("U"+user.getId() , "F"+fileId , relawarp.getRelaUnit()).getId();
+
+            res.add(resId);
+        }
+
+        return res;
+    }
+
+
+
+
+
 
     /* node things */
 

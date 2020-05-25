@@ -1,6 +1,7 @@
 package com.example.demo.serviceImpl;
 
 import com.example.demo.POJO.Node;
+import com.example.demo.POJO.RelaCSVWarp;
 import com.example.demo.POJO.Relation;
 import com.example.demo.POJO.RelationWarp;
 import com.example.demo.repository.NodeRepository;
@@ -90,6 +91,7 @@ public class GraphServiceImpl implements GraphService {
         if (!nodeToInsert.getLabels().contains(fileLabel)){
             nodeToInsert.getLabels().add(fileLabel);
         }
+        nodeToInsert.setId(null);
 
         nodeToInsert.setDelete(false);
         return  nodeRepository.save(nodeToInsert);
@@ -122,6 +124,11 @@ public class GraphServiceImpl implements GraphService {
     @Override
     public List<RelationWarp> getRelationsByFile(String userLabel, String fileLabel) {
         return relationRepository.findByUserLabelAndFileLabelAndDelete(userLabel, fileLabel,false);
+    }
+
+    @Override
+    public List<RelaCSVWarp> getRelaCSV(String userLabel, String fileLabel){
+        return relationRepository.findForCSVFormat(userLabel , fileLabel , false);
     }
 
     @Override

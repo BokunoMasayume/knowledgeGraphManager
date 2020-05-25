@@ -60,6 +60,7 @@ public class TestWebSecurity extends WebSecurityConfigurerAdapter {
                 "/**/*.jpg"
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll()
+//                .antMatchers("/csv/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//for axios options pre check
                 .anyRequest().authenticated();
         //禁用缓存

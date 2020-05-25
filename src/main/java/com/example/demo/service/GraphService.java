@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.POJO.Node;
+import com.example.demo.POJO.RelaCSVWarp;
 import com.example.demo.POJO.Relation;
 import com.example.demo.POJO.RelationWarp;
 
@@ -31,7 +32,7 @@ public interface GraphService {
     //relationship methods
 
     List<RelationWarp> getRelationsByFile(String userLabel , String fileLabel);
-
+    List<RelaCSVWarp> getRelaCSV(String userLabel, String fileLabel);
     //logically
     List<RelationWarp> deleteRelationsByFile(String userLabel , String fileLabel);
 

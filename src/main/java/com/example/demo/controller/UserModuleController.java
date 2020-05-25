@@ -46,6 +46,8 @@ public class UserModuleController {
         return userModuleRepository.findByUserId(user.getId());
     }
 
+
+
     @PostMapping
     public UserModule insertOneModule(@RequestBody UserModule moduleToAdd){
         JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
